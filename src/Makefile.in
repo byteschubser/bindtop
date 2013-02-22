@@ -51,7 +51,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = a.out$(EXEEXT)
+bin_PROGRAMS = bindtop$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/depcomp
@@ -64,9 +64,12 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_a_out_OBJECTS = bindtop.$(OBJEXT)
-a_out_OBJECTS = $(am_a_out_OBJECTS)
-a_out_LDADD = $(LDADD)
+am_bindtop_OBJECTS = bindtop-main.$(OBJEXT) \
+	bindtop-interface.$(OBJEXT) bindtop-statistics.$(OBJEXT)
+bindtop_OBJECTS = $(am_bindtop_OBJECTS)
+bindtop_LDADD = $(LDADD)
+bindtop_LINK = $(CCLD) $(bindtop_CFLAGS) $(CFLAGS) $(bindtop_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -75,8 +78,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(a_out_SOURCES)
-DIST_SOURCES = $(a_out_SOURCES)
+SOURCES = $(bindtop_SOURCES)
+DIST_SOURCES = $(bindtop_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -102,6 +105,8 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_LIBS = @GLIB_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -122,10 +127,15 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+XML_CFLAGS = @XML_CFLAGS@
+XML_LIBS = @XML_LIBS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -180,7 +190,9 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-a_out_SOURCES = bindtop.c
+bindtop_SOURCES = main.c interface.c statistics.c
+bindtop_CFLAGS = ${XML_CFLAGS} ${GLIB_CFLAGS}
+bindtop_LDFLAGS = ${XML_LIBS} ${GLIB_LIBS}
 all: all-am
 
 .SUFFIXES:
@@ -255,9 +267,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-a.out$(EXEEXT): $(a_out_OBJECTS) $(a_out_DEPENDENCIES) $(EXTRA_a_out_DEPENDENCIES) 
-	@rm -f a.out$(EXEEXT)
-	$(LINK) $(a_out_OBJECTS) $(a_out_LDADD) $(LIBS)
+bindtop$(EXEEXT): $(bindtop_OBJECTS) $(bindtop_DEPENDENCIES) $(EXTRA_bindtop_DEPENDENCIES) 
+	@rm -f bindtop$(EXEEXT)
+	$(bindtop_LINK) $(bindtop_OBJECTS) $(bindtop_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -265,7 +277,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop-interface.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop-statistics.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -280,6 +294,48 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+bindtop-main.o: main.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-main.o -MD -MP -MF $(DEPDIR)/bindtop-main.Tpo -c -o bindtop-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-main.Tpo $(DEPDIR)/bindtop-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='bindtop-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+
+bindtop-main.obj: main.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-main.obj -MD -MP -MF $(DEPDIR)/bindtop-main.Tpo -c -o bindtop-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-main.Tpo $(DEPDIR)/bindtop-main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='bindtop-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+
+bindtop-interface.o: interface.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-interface.o -MD -MP -MF $(DEPDIR)/bindtop-interface.Tpo -c -o bindtop-interface.o `test -f 'interface.c' || echo '$(srcdir)/'`interface.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-interface.Tpo $(DEPDIR)/bindtop-interface.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='interface.c' object='bindtop-interface.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-interface.o `test -f 'interface.c' || echo '$(srcdir)/'`interface.c
+
+bindtop-interface.obj: interface.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-interface.obj -MD -MP -MF $(DEPDIR)/bindtop-interface.Tpo -c -o bindtop-interface.obj `if test -f 'interface.c'; then $(CYGPATH_W) 'interface.c'; else $(CYGPATH_W) '$(srcdir)/interface.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-interface.Tpo $(DEPDIR)/bindtop-interface.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='interface.c' object='bindtop-interface.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-interface.obj `if test -f 'interface.c'; then $(CYGPATH_W) 'interface.c'; else $(CYGPATH_W) '$(srcdir)/interface.c'; fi`
+
+bindtop-statistics.o: statistics.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-statistics.o -MD -MP -MF $(DEPDIR)/bindtop-statistics.Tpo -c -o bindtop-statistics.o `test -f 'statistics.c' || echo '$(srcdir)/'`statistics.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-statistics.Tpo $(DEPDIR)/bindtop-statistics.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='statistics.c' object='bindtop-statistics.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-statistics.o `test -f 'statistics.c' || echo '$(srcdir)/'`statistics.c
+
+bindtop-statistics.obj: statistics.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-statistics.obj -MD -MP -MF $(DEPDIR)/bindtop-statistics.Tpo -c -o bindtop-statistics.obj `if test -f 'statistics.c'; then $(CYGPATH_W) 'statistics.c'; else $(CYGPATH_W) '$(srcdir)/statistics.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-statistics.Tpo $(DEPDIR)/bindtop-statistics.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='statistics.c' object='bindtop-statistics.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-statistics.obj `if test -f 'statistics.c'; then $(CYGPATH_W) 'statistics.c'; else $(CYGPATH_W) '$(srcdir)/statistics.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
