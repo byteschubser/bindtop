@@ -51,12 +51,17 @@ int delXMLFile(char *tmp_file) {
 	char *command;
 
 	command = malloc(sizeof(rm) + sizeof(tmp_file));
-	strcpy(command, rm);
-	strcat(command, tmp_file);
-	ret = system(command);
-	free(command);
-	if (ret == -1)
+	if (command == NULL) {
+		fprintf(stderr, "Error allocating %i bytes of memory",sizeof(rm) + sizeof(tmp_file));
 		return EXIT_FAILURE;
-	else
+	} else {
+		strcpy(command, rm);
+		strcat(command, tmp_file);
+		ret = system(command);
+		free(command);
+		if (ret == -1)
+			return EXIT_FAILURE;
+		else
 		return EXIT_SUCCESS;
+	}
 }
