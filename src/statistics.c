@@ -14,17 +14,27 @@
 
 static void ZabbixCommand(bindtop_Settings_Type bindtop_Settings, char *key, char *value) {
 	char *command;
-	command = malloc(sizeof(bindtop_Settings.zabbix_sender) +
-						sizeof(bindtop_Settings.zabbix_node) +
-						sizeof(bindtop_Settings.zabbix_server) +
-						sizeof(bindtop_Settings.zabbix_port) +
-						sizeof(key) +
-						sizeof(value) +
-						sizeof(" -z ") +
-						sizeof(" -p ") +
-						sizeof(" -s ") +
-						sizeof(" -k ") +
-						sizeof(" -o "));
+	int memory;
+
+	memory = sizeof(bindtop_Settings.zabbix_sender) +
+			sizeof(bindtop_Settings.zabbix_node) +
+			sizeof(bindtop_Settings.zabbix_server) +
+			sizeof(bindtop_Settings.zabbix_port) +
+			sizeof(key) +
+			sizeof(value) +
+			sizeof(" -z ") +
+			sizeof(" -p ") +
+			sizeof(" -s ") +
+			sizeof(" -k ") +
+			sizeof(" -o ");
+	command = malloc(memory);
+	if (command == NULL) {
+		fprintf(stderr, "Error allocating %i bytes of memory\n", memory);
+		fprintf(stderr, "Cannot create string to execute zabbix_sender command. Aborting...\n");
+		fprintf(stderr, "Trying to cleanup temporary data...\n");
+		delXMLFile(bindtop_Settings.tmp_file);
+		exit(EXIT_FAILURE);
+	}
 	strcpy(command, bindtop_Settings.zabbix_sender);
 	strcat(command, " -z ");
 	strcat(command, bindtop_Settings.zabbix_server);

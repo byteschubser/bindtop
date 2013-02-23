@@ -52,8 +52,9 @@ int delXMLFile(char *tmp_file) {
 
 	command = malloc(sizeof(rm) + sizeof(tmp_file));
 	if (command == NULL) {
-		fprintf(stderr, "Error allocating %i bytes of memory",sizeof(rm) + sizeof(tmp_file));
-		return EXIT_FAILURE;
+		fprintf(stderr, "Error allocating %i bytes of memory.\n",sizeof(rm) + sizeof(tmp_file));
+		fprintf(stderr, "You have to delete %s by your own!\n", tmp_file);
+		exit(EXIT_FAILURE);
 	} else {
 		strcpy(command, rm);
 		strcat(command, tmp_file);
