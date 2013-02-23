@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	} else {
 		bindtop_Settings = readConfigFile(argv[1]);
-		delXMLFile(bindtop_Settings.tmp_file);
+		delXMLFile(bindtop_Settings);
 		getBindStatisticsZabbix(bindtop_Settings);
 		return EXIT_SUCCESS;
 	}

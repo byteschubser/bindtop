@@ -10,8 +10,8 @@
 
 #include "bindtop.h"
 
-int getXMLFile(char*, char*);
-int delXMLFile(char*);
+int getXMLFile(bindtop_Settings_Type);
+int delXMLFile(bindtop_Settings_Type);
 bindtop_Settings_Type readConfigFile(char *);
 
 #endif /* INTERFACE_H_ */

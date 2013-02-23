@@ -30,14 +30,15 @@ bindtop_Settings_Type readConfigFile(char *ConfigFile) {
 	bindtop_Settings->zabbix_sender = g_key_file_get_string(GConfigFile, "ZABBIX", "SENDER", NULL);
 	bindtop_Settings->zabbix_port = g_key_file_get_string(GConfigFile, "ZABBIX", "PORT", NULL);
 	bindtop_Settings->zabbix_node = g_key_file_get_string(GConfigFile, "ZABBIX", "NODE", NULL);
+	bindtop_Settings->debug = g_key_file_get_integer(GConfigFile, "DEBUG", "DEBUG", NULL);
 	return *bindtop_Settings;
 }
 
-int getXMLFile(char *url, char *tmp_file) {
+int getXMLFile(bindtop_Settings_Type bindtop_Settings) {
 	int ret;
 
 	xmlNanoHTTPInit();
-	ret = xmlNanoHTTPFetch(url, tmp_file, NULL);
+	ret = xmlNanoHTTPFetch(bindtop_Settings.url, bindtop_Settings.tmp_file, NULL);
 	xmlNanoHTTPCleanup();
 	if (ret == -1)
 		return EXIT_FAILURE;
@@ -45,19 +46,19 @@ int getXMLFile(char *url, char *tmp_file) {
 		return EXIT_SUCCESS;
 }
 
-int delXMLFile(char *tmp_file) {
+int delXMLFile(bindtop_Settings_Type bindtop_Settings) {
 	int ret;
 	char *rm = "rm -f ";
 	char *command;
 
-	command = malloc(sizeof(rm) + sizeof(tmp_file));
+	command = malloc(sizeof(rm) + sizeof(bindtop_Settings.tmp_file));
 	if (command == NULL) {
-		fprintf(stderr, "Error allocating %i bytes of memory.\n",sizeof(rm) + sizeof(tmp_file));
-		fprintf(stderr, "You have to delete %s by your own!\n", tmp_file);
-		exit(EXIT_FAILURE);
+		debug("Error allocating memory.\n", bindtop_Settings.debug);
+		debug("Please delete the tmp_file by your own!\n", bindtop_Settings.debug);
+		exit(NO_MEMORY);
 	} else {
 		strcpy(command, rm);
-		strcat(command, tmp_file);
+		strcat(command, bindtop_Settings.tmp_file);
 		ret = system(command);
 		free(command);
 		if (ret == -1)

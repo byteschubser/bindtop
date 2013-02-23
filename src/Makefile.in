@@ -65,7 +65,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_bindtop_OBJECTS = bindtop-main.$(OBJEXT) \
-	bindtop-interface.$(OBJEXT) bindtop-statistics.$(OBJEXT)
+	bindtop-interface.$(OBJEXT) bindtop-statistics.$(OBJEXT) \
+	bindtop-helper.$(OBJEXT)
 bindtop_OBJECTS = $(am_bindtop_OBJECTS)
 bindtop_LDADD = $(LDADD)
 bindtop_LINK = $(CCLD) $(bindtop_CFLAGS) $(CFLAGS) $(bindtop_LDFLAGS) \
@@ -190,7 +191,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-bindtop_SOURCES = main.c interface.c statistics.c
+bindtop_SOURCES = main.c interface.c statistics.c helper.c
 bindtop_CFLAGS = ${XML_CFLAGS} ${GLIB_CFLAGS}
 bindtop_LDFLAGS = ${XML_LIBS} ${GLIB_LIBS}
 all: all-am
@@ -277,6 +278,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop-interface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bindtop-statistics.Po@am__quote@
@@ -336,6 +338,20 @@ bindtop-statistics.obj: statistics.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='statistics.c' object='bindtop-statistics.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-statistics.obj `if test -f 'statistics.c'; then $(CYGPATH_W) 'statistics.c'; else $(CYGPATH_W) '$(srcdir)/statistics.c'; fi`
+
+bindtop-helper.o: helper.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-helper.o -MD -MP -MF $(DEPDIR)/bindtop-helper.Tpo -c -o bindtop-helper.o `test -f 'helper.c' || echo '$(srcdir)/'`helper.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-helper.Tpo $(DEPDIR)/bindtop-helper.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='helper.c' object='bindtop-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-helper.o `test -f 'helper.c' || echo '$(srcdir)/'`helper.c
+
+bindtop-helper.obj: helper.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -MT bindtop-helper.obj -MD -MP -MF $(DEPDIR)/bindtop-helper.Tpo -c -o bindtop-helper.obj `if test -f 'helper.c'; then $(CYGPATH_W) 'helper.c'; else $(CYGPATH_W) '$(srcdir)/helper.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/bindtop-helper.Tpo $(DEPDIR)/bindtop-helper.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='helper.c' object='bindtop-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bindtop_CFLAGS) $(CFLAGS) -c -o bindtop-helper.obj `if test -f 'helper.c'; then $(CYGPATH_W) 'helper.c'; else $(CYGPATH_W) '$(srcdir)/helper.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
