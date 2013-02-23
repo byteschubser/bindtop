@@ -1,1 +1,5 @@
-Sample NEWS file for bindtop project.
+bindtop-1.0
+
+* quick and dirty solution
+* interface to zabbix unsing zabbix_sender
+

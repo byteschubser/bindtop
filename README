@@ -1,1 +1,6 @@
-Sample readme file for bindtop project.
+bindtop
+
+* compile it
+* configure it in bindtop.conf
+* use it ./bindtop bindtop.conf
+
