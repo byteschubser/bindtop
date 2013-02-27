@@ -21,6 +21,7 @@ typedef struct
 
 #define NO_MEMORY 		1000
 #define NO_CONFIG_FILE	1001
+#define	NO_XML_DATA		1002
 
 void debug(char*, int);
 

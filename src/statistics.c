@@ -14,9 +14,9 @@
 
 static void ZabbixCommand(bindtop_Settings_Type bindtop_Settings, char *key, char *value) {
 	char *command;
-	int memory;
+	int ret;
 
-	memory = sizeof(bindtop_Settings.zabbix_sender) +
+	command = malloc(sizeof(bindtop_Settings.zabbix_sender) +
 			sizeof(bindtop_Settings.zabbix_node) +
 			sizeof(bindtop_Settings.zabbix_server) +
 			sizeof(bindtop_Settings.zabbix_port) +
@@ -26,8 +26,7 @@ static void ZabbixCommand(bindtop_Settings_Type bindtop_Settings, char *key, cha
 			sizeof(" -p ") +
 			sizeof(" -s ") +
 			sizeof(" -k ") +
-			sizeof(" -o ");
-	command = malloc(memory);
+			sizeof(" -o "));
 	if (command == NULL) {
 		debug("Error allocating memory\n", bindtop_Settings.debug);
 		debug("Cannot create string to execute zabbix_sender command. Aborting...\n", bindtop_Settings.debug);
@@ -48,7 +47,9 @@ static void ZabbixCommand(bindtop_Settings_Type bindtop_Settings, char *key, cha
 	strcat(command, value);
 	debug(command, bindtop_Settings.debug);
 	debug("\n", bindtop_Settings.debug);
-	system(command);
+	ret = system(command);
+	if (ret == -1)
+		debug("Error executing zabbix_sender command\n");
 	free(command);
 }
 

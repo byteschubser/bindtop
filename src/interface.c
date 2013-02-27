@@ -40,9 +40,10 @@ int getXMLFile(bindtop_Settings_Type bindtop_Settings) {
 	xmlNanoHTTPInit();
 	ret = xmlNanoHTTPFetch(bindtop_Settings.url, bindtop_Settings.tmp_file, NULL);
 	xmlNanoHTTPCleanup();
-	if (ret == -1)
-		return EXIT_FAILURE;
-	else
+	if (ret == -1) {
+		debug("Unable to fetch xml data from bind. Aborting...\n", bindtop_Settings.debug);
+		exit(NO_XML_DATA);
+	} else
 		return EXIT_SUCCESS;
 }
 
@@ -54,16 +55,17 @@ int delXMLFile(bindtop_Settings_Type bindtop_Settings) {
 	command = malloc(sizeof(rm) + sizeof(bindtop_Settings.tmp_file));
 	if (command == NULL) {
 		debug("Error allocating memory.\n", bindtop_Settings.debug);
-		debug("Please delete the tmp_file by your own!\n", bindtop_Settings.debug);
+		debug("Please delete the temporary file by your own!\n", bindtop_Settings.debug);
 		exit(NO_MEMORY);
 	} else {
 		strcpy(command, rm);
 		strcat(command, bindtop_Settings.tmp_file);
 		ret = system(command);
 		free(command);
-		if (ret == -1)
+		if (ret == -1) {
+			debug("Error deleting the temporary file.\n", bindtop_Settings.debug);
 			return EXIT_FAILURE;
-		else
-		return EXIT_SUCCESS;
+		} else
+			return EXIT_SUCCESS;
 	}
 }
